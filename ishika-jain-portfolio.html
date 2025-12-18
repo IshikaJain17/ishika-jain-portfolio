@@ -525,32 +525,6 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             position: relative;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .company-logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            object-fit: contain;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .company-logo:hover {
-            transform: scale(1.1);
-            background: rgba(0, 217, 255, 0.2);
-        }
-
-        .company-name {
-            flex: 1;
-            background: linear-gradient(45deg, var(--accent) 0%, var(--accent-2) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .timeline-role {
@@ -1430,11 +1404,8 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <div class="timeline-date">Aug 2025 – Present</div>
-                    <div class="timeline-company">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzAwZDlmZiIvPgo8dGV4dCB4PSIyMCIgeT0iMjYiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkU8L3RleHQ+Cjwvc3ZnPgo=" alt="Edysor Logo" class="company-logo">
-                        <span class="company-name">Edysor Edutech Solutions Pvt Ltd</span>
-                    </div>
-                    <div class="timeline-role">AI/ML Engineer • Udaipur, Rajasthan</div>
+                    <h3 class="timeline-company">Edysor Edutech Solutions</h3>
+                    <div class="timeline-role">AI/ML Engineer • Noida, Delhi NCR</div>
                     <ul class="timeline-description">
                         <li>Created custom AI avatar using advanced open-source models with 96% generation accuracy, reducing costs by 80%</li>
                         <li>Built context-aware messaging AI bot with modern frameworks, reducing manual query handling by 95%</li>
@@ -1449,10 +1420,7 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <div class="timeline-date">Apr 2025 – Jul 2025</div>
-                    <div class="timeline-company">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iI2ZmMDA2ZSIvPgo8dGV4dCB4PSIyMCIgeT0iMjYiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkM8L3RleHQ+Cjwvc3ZnPgo=" alt="Consint Solutions Logo" class="company-logo">
-                        <span class="company-name">Consint Solutions Pvt Ltd</span>
-                    </div>
+                    <h3 class="timeline-company">Consint Solutions</h3>
                     <div class="timeline-role">Data Scientist Intern • Noida</div>
                     <ul class="timeline-description">
                         <li>Built end-to-end VLM pipeline for passport entity extraction, improving accuracy from 30.45% to 98.06%</li>
@@ -1466,10 +1434,7 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <div class="timeline-date">Dec 2023 – Jun 2024</div>
-                    <div class="timeline-company">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzc2YjkwMCIvPgo8dGV4dCB4PSIyMCIgeT0iMTgiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkdJPC90ZXh0Pgo8dGV4dCB4PSIyMCIgeT0iMzAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TjwvdGV4dD4KPC9zdmc+Cg==" alt="Global Infoventures Logo" class="company-logo">
-                        <span class="company-name">Global Infoventures Pvt Ltd (NVIDIA Partnership)</span>
-                    </div>
+                    <h3 class="timeline-company">Global Infoventures (NVIDIA Partnership)</h3>
                     <div class="timeline-role">AI-ML Trainee • Ghaziabad</div>
                     <ul class="timeline-description">
                         <li>Annotated 5500+ images using Roboflow and applied augmentation techniques</li>
