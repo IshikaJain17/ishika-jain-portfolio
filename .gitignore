@@ -1,0 +1,44 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup files
+*.bak
+*~
+
+# Unnecessary portfolio files
+old_portfolio.html
+ishika-jain-portfolio-3d.html
+*.jfif
+
+# Large image files (keep only essential ones)
+# Uncomment if you want to exclude large images
+# *.png
+# *.jpg
+# *.jpeg
+
+# Node modules (if you add any)
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
