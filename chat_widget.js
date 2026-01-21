@@ -54,7 +54,7 @@ class ChatAssistant {
                     </div>
                     <div class="chat-info">
                         <h4>AI Assistant</h4>
-                        <span class="status-text">Ask about Ishika</span>
+                        <span class="status-text">Ask Anything</span>
                     </div>
                     <button class="minimize-btn" id="minimizeChat">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -740,12 +740,12 @@ class ChatAssistant {
             const response = await fetch(`${this.apiUrl}/stats`);
             if (response.ok) {
                 const data = await response.json();
-                this.updateStatus('online', `${data.document_count || 0} docs loaded`);
+                this.updateStatus('online', 'Ask Anything');
             } else {
-                this.updateStatus('offline', 'Backend not connected');
+                this.updateStatus('offline', 'Ask Anything');
             }
         } catch (error) {
-            this.updateStatus('offline', 'Backend not connected');
+            this.updateStatus('offline', 'Ask Anything');
         }
     }
 
