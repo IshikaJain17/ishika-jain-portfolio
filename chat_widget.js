@@ -32,15 +32,21 @@ class ChatAssistant {
         const chatHTML = `
             <!-- Floating Chat Button -->
             <div class="chat-widget-button" id="chatWidgetButton">
-                <div class="chat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3.04 1.05 4.35L2 22l5.65-1.05C9.04 21.64 10.46 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm-1 14h-1v-1h1v1zm1-3h-1V7h1v6z"/>
-                    </svg>
+                <div class="chat-content">
+                    <div class="chat-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3.04 1.05 4.35L2 22l5.65-1.05C9.04 21.64 10.46 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm-1 14h-1v-1h1v1zm1-3h-1V7h1v6z"/>
+                        </svg>
+                    </div>
+                    <span class="chat-text">Ask anything</span>
                 </div>
-                <div class="chat-close-icon" style="display: none;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                    </svg>
+                <div class="chat-close-content" style="display: none;">
+                    <div class="chat-close-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </div>
+                    <span class="chat-text">Close</span>
                 </div>
                 <div class="chat-pulse"></div>
             </div>
@@ -54,7 +60,7 @@ class ChatAssistant {
                     </div>
                     <div class="chat-info">
                         <h4>AI Assistant</h4>
-                        <span class="status-text">Ask Anything</span>
+                        <span class="status-text">Ask about Ishika</span>
                     </div>
                     <button class="minimize-btn" id="minimizeChat">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -114,10 +120,10 @@ class ChatAssistant {
                     position: fixed;
                     bottom: 20px;
                     right: 20px;
-                    width: 60px;
+                    min-width: 60px;
                     height: 60px;
                     background: linear-gradient(135deg, #00d9ff 0%, #ff006e 100%);
-                    border-radius: 50%;
+                    border-radius: 30px;
                     cursor: pointer;
                     display: flex;
                     align-items: center;
@@ -127,16 +133,41 @@ class ChatAssistant {
                     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                     z-index: 10000;
                     overflow: hidden;
+                    padding: 0 20px;
+                    white-space: nowrap;
                 }
 
                 .chat-widget-button:hover {
-                    transform: scale(1.1);
+                    transform: scale(1.05);
                     box-shadow: 0 12px 40px rgba(0, 217, 255, 0.6);
                 }
 
                 .chat-widget-button.active {
                     background: linear-gradient(135deg, #ff006e 0%, #ffbe0b 100%);
-                    border-radius: 50% 50% 50% 8px;
+                    min-width: 90px;
+                }
+
+                .chat-content, .chat-close-content {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    transition: all 0.3s ease;
+                }
+
+                .chat-text {
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: white;
+                    opacity: 1;
+                    transition: opacity 0.3s ease;
+                }
+
+                .chat-widget-button.active .chat-content {
+                    display: none;
+                }
+
+                .chat-widget-button.active .chat-close-content {
+                    display: flex !important;
                 }
 
                 .chat-pulse {
@@ -158,17 +189,7 @@ class ChatAssistant {
 
                 .chat-icon, .chat-close-icon {
                     transition: all 0.3s ease;
-                }
-
-                .chat-widget-button.active .chat-icon {
-                    transform: rotate(180deg);
-                    opacity: 0;
-                }
-
-                .chat-widget-button.active .chat-close-icon {
-                    display: block !important;
-                    transform: rotate(0deg);
-                    opacity: 1;
+                    flex-shrink: 0;
                 }
 
                 /* Chat Window */
@@ -519,8 +540,17 @@ class ChatAssistant {
                     .chat-widget-button {
                         bottom: 15px;
                         right: 15px;
-                        width: 50px;
+                        min-width: 50px;
                         height: 50px;
+                        padding: 0 15px;
+                    }
+
+                    .chat-widget-button.active {
+                        min-width: 80px;
+                    }
+
+                    .chat-text {
+                        font-size: 12px;
                     }
 
                     .message-content {
@@ -740,7 +770,7 @@ class ChatAssistant {
             const response = await fetch(`${this.apiUrl}/stats`);
             if (response.ok) {
                 const data = await response.json();
-                this.updateStatus('online', `${data.document_count || 0} docs loaded`);
+                this.updateStatus('online', 'Online');
             } else {
                 this.updateStatus('offline', 'Backend not connected');
             }
