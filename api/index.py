@@ -31,10 +31,16 @@ logger = logging.getLogger(__name__)
 class SimpleRAGSystem:
     """Simplified RAG system for serverless deployment"""
     
-    def __init__(self, openai_api_key: str):
+    def __init__(self, openai_api_key: str = None):
         self.openai_api_key = openai_api_key
-        if OPENAI_AVAILABLE:
-            self.openai_client = OpenAI(api_key=openai_api_key)
+        self.openai_client = None
+        
+        if OPENAI_AVAILABLE and openai_api_key:
+            try:
+                self.openai_client = OpenAI(api_key=openai_api_key)
+            except Exception as e:
+                logger.error(f"Failed to initialize OpenAI client: {e}")
+                self.openai_client = None
         
         # Store resume data in memory (for serverless)
         self.resume_data = """
@@ -147,6 +153,20 @@ class SimpleRAGSystem:
 if FLASK_AVAILABLE:
     app = Flask(__name__)
     CORS(app)
+    
+    # Add error handlers for proper JSON responses
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({"error": "Endpoint not found"}), 404
+    
+    @app.errorhandler(405)  
+    def method_not_allowed(error):
+        return jsonify({"error": "Method not allowed"}), 405
+        
+    @app.errorhandler(500)
+    def internal_error(error):
+        return jsonify({"error": "Internal server error"}), 500
+        
 else:
     print("❌ Flask not available. Please install: pip install flask flask-cors")
     exit(1)
@@ -185,18 +205,28 @@ def get_stats():
 
 @app.route('/api/query', methods=['POST'])
 def query_rag():
-    global rag_system
-    
-    if not rag_system:
-        initialize_rag()
-    
     try:
-        data = request.get_json()
+        global rag_system
+        
+        if not rag_system:
+            initialize_rag()
+        
+        # Get JSON data
+        try:
+            data = request.get_json(force=True)
+        except Exception as e:
+            logger.error(f"JSON parse error: {e}")
+            return jsonify({"error": "Invalid JSON data"}), 400
+            
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+            
         question = data.get('question', '').strip()
         
         if not question:
             return jsonify({"error": "No question provided"}), 400
         
+        # Generate response
         answer = rag_system.generate_response(question)
         
         return jsonify({
@@ -208,7 +238,10 @@ def query_rag():
         
     except Exception as e:
         logger.error(f"Error in query endpoint: {e}")
-        return jsonify({"error": "Sorry, I had trouble processing your question. Please try again."}), 500
+        return jsonify({
+            "error": "Sorry, I had trouble processing your question. Please try again.",
+            "debug": str(e) if app.debug else None
+        }), 500
 
 # Initialize on startup
 initialize_rag()
