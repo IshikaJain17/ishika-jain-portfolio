@@ -2,14 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "rag_vector.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "api/index.py"
+    },
+    {
       "src": "/(.*)",
-      "dest": "rag_vector.py"
+      "dest": "/$1"
     }
   ]
 }
