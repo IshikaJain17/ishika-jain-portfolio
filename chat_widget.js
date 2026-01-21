@@ -5,8 +5,8 @@ class ChatAssistant {
     constructor(apiUrl = null) {
         // Auto-detect API URL based on environment
         if (!apiUrl) {
-            if (window.location.protocol === 'file:') {
-                // Local file - use localhost for testing
+            if (window.location.protocol === 'file:' || window.location.port === '5500') {
+                // Local file or Live Server - use localhost:5000 for API
                 this.apiUrl = 'http://localhost:5000/api';
             } else {
                 // Deployed - use relative path
