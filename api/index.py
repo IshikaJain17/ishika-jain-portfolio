@@ -213,10 +213,9 @@ def query_rag():
 # Initialize on startup
 initialize_rag()
 
-# Vercel serverless function handler
-def handler(request):
-    """Vercel serverless handler"""
-    return app(request.environ, request.start_response)
+# Vercel requires the app to be available at module level
+# Export the Flask app for Vercel
+app = app
 
 if __name__ == '__main__':
     # For local development
