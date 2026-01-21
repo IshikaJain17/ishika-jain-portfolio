@@ -740,12 +740,12 @@ class ChatAssistant {
             const response = await fetch(`${this.apiUrl}/stats`);
             if (response.ok) {
                 const data = await response.json();
-                this.updateStatus('online', 'Ask Anything');
+                this.updateStatus('online', `${data.document_count || 0} docs loaded`);
             } else {
-                this.updateStatus('offline', 'Ask Anything');
+                this.updateStatus('offline', 'Backend not connected');
             }
         } catch (error) {
-            this.updateStatus('offline', 'Ask Anything');
+            this.updateStatus('offline', 'Backend not connected');
         }
     }
 
