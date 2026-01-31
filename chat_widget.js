@@ -34,12 +34,8 @@ class ChatAssistant {
             <!-- Floating Chat Button -->
             <div class="chat-widget-button" id="chatWidgetButton">
                 <div class="chat-content">
-                    <div class="chat-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3.04 1.05 4.35L2 22l5.65-1.05C9.04 21.64 10.46 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm-1 14h-1v-1h1v1zm1-3h-1V7h1v6z"/>
-                        </svg>
-                    </div>
-                    <span class="chat-text">Ask anything</span>
+                    <img src="chatbot-logo.png" alt="Chat with me" class="chat-btn-logo">
+                    <span class="chat-hover-text">Let's talk to me!</span>
                 </div>
                 <div class="chat-close-content" style="display: none;">
                     <div class="chat-close-icon">
@@ -121,31 +117,69 @@ class ChatAssistant {
                     position: fixed;
                     bottom: 20px;
                     right: 20px;
-                    min-width: 60px;
-                    height: 60px;
-                    background: linear-gradient(135deg, #00d9ff 0%, #ff006e 100%);
-                    border-radius: 30px;
+                    width: 70px;
+                    height: auto;
+                    background: transparent;
+                    border-radius: 50%;
                     cursor: pointer;
                     display: flex;
+                    flex-direction: column;
                     align-items: center;
                     justify-content: center;
                     color: white;
-                    box-shadow: 0 8px 32px rgba(0, 217, 255, 0.4);
                     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                     z-index: 10000;
-                    overflow: hidden;
-                    padding: 0 20px;
+                    padding: 0;
+                }
+
+                .chat-btn-logo {
+                    width: 65px;
+                    height: 65px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    box-shadow: 0 8px 32px rgba(0, 217, 255, 0.5);
+                    transition: all 0.3s ease;
+                    border: 3px solid rgba(0, 217, 255, 0.6);
+                }
+
+                .chat-widget-button:hover .chat-btn-logo {
+                    transform: scale(1.1);
+                    box-shadow: 0 12px 40px rgba(0, 217, 255, 0.7);
+                    border-color: #00d9ff;
+                }
+
+                .chat-hover-text {
+                    font-size: 11px;
+                    font-weight: 600;
+                    color: #00d9ff;
+                    margin-top: 6px;
+                    opacity: 0;
+                    transform: translateY(-5px);
+                    transition: all 0.3s ease;
+                    text-shadow: 0 2px 10px rgba(0, 217, 255, 0.5);
                     white-space: nowrap;
+                }
+
+                .chat-widget-button:hover .chat-hover-text {
+                    opacity: 1;
+                    transform: translateY(0);
                 }
 
                 .chat-widget-button:hover {
                     transform: scale(1.05);
-                    box-shadow: 0 12px 40px rgba(0, 217, 255, 0.6);
                 }
 
                 .chat-widget-button.active {
                     background: linear-gradient(135deg, #ff006e 0%, #ffbe0b 100%);
-                    min-width: 90px;
+                    width: 90px;
+                    height: 40px;
+                    border-radius: 20px;
+                    padding: 0 15px;
+                }
+
+                .chat-widget-button.active .chat-btn-logo,
+                .chat-widget-button.active .chat-hover-text {
+                    display: none;
                 }
 
                 .chat-content, .chat-close-content {
