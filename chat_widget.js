@@ -98,9 +98,6 @@ class ChatAssistant {
                             </svg>
                         </button>
                     </div>
-                    <div class="input-footer">
-                        <span class="powered-by">Powered by Ishika Jain</span>
-                    </div>
                 </div>
             </div>
         `;
