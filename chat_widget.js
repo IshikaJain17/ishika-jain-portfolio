@@ -153,16 +153,15 @@ class ChatAssistant {
                     font-weight: 600;
                     color: #00d9ff;
                     margin-top: 6px;
-                    opacity: 0;
-                    transform: translateY(-5px);
+                    opacity: 1;
                     transition: all 0.3s ease;
                     text-shadow: 0 2px 10px rgba(0, 217, 255, 0.5);
                     white-space: nowrap;
                 }
 
                 .chat-widget-button:hover .chat-hover-text {
-                    opacity: 1;
-                    transform: translateY(0);
+                    color: #fff;
+                    text-shadow: 0 2px 15px rgba(0, 217, 255, 0.8);
                 }
 
                 .chat-widget-button:hover {
