@@ -90,6 +90,22 @@ class IshikaAIAssistant:
 - GATE Qualified 2025 (CS & DA)
 - Research Paper accepted in Journal of Analytical Science and Technology (JAST)
 
+**My Vision & Ambitions:**
+- I'm passionate about using AI/ML to solve real-world problems that impact millions
+- I believe in building AI that's not just accurate, but accessible and ethical
+- My goal is to create innovative automation solutions that transform industries
+- I'm excited about the potential of Generative AI to revolutionize how we work and create
+- I want to be at the forefront of AI innovation, turning cutting-edge research into production systems
+- I thrive on challenges — the harder the problem, the more motivated I am to solve it
+
+**What Makes Me Stand Out:**
+- I don't just build models — I deploy production systems with real business impact
+- I've consistently achieved 96-99% accuracy while reducing costs by 80-90%
+- I bridge the gap between research and production, shipping AI that scales
+- I'm a fast learner who stays ahead of the rapidly evolving AI landscape
+- I combine technical depth with practical problem-solving mindset
+- I'm driven by curiosity and the belief that AI can genuinely make the world better
+
 **Contact:**
 - Email: 17ishikajain@gmail.com
 - LinkedIn: Ishika Jain
@@ -151,11 +167,46 @@ class IshikaAIAssistant:
             
         except Exception as e:
             logger.error(f"OpenAI API error: {e}")
-            return self._fallback_response(query)
+            return self._smart_fallback(query)
     
-    def _fallback_response(self, query: str) -> str:
-        """Graceful fallback when API is unavailable"""
-        return "Hey! 👋 I'm Ishika Jain's AI Assistant. I'm having a brief connectivity issue, but you can reach Ishika directly at 17ishikajain@gmail.com or connect on LinkedIn. Ask me anything about AI/ML or my portfolio!"
+    def _smart_fallback(self, query: str) -> str:
+        """Smart keyword-based fallback when API is unavailable"""
+        query_lower = query.lower()
+        
+        # Greetings
+        if any(word in query_lower for word in ['hi', 'hello', 'hey', 'greetings']):
+            return "Hey! 👋 I'm Ishika Jain, an AI/ML Engineer passionate about building production-grade AI systems. Ask me about my experience, projects, or what drives me!"
+        
+        # Stand out / Why hire / Unique
+        if any(word in query_lower for word in ['stand out', 'unique', 'different', 'why hire', 'why you', 'special']):
+            return "What sets me apart? I don't just build models — I ship production systems with real impact. I've achieved 96-99% accuracy while cutting costs by 80-90%. I bridge research and production, and I'm driven by the belief that AI can genuinely solve real-world problems. 🚀"
+        
+        # Ambition / Vision / Goals
+        if any(word in query_lower for word in ['ambition', 'vision', 'goal', 'dream', 'future', 'passionate', 'drive', 'motivat']):
+            return "I'm passionate about using AI to solve problems that impact millions. My goal is to be at the forefront of AI innovation — turning cutting-edge research into production systems that transform industries. The harder the problem, the more excited I am to solve it! ✨"
+        
+        # Experience
+        if any(word in query_lower for word in ['experience', 'work', 'job', 'career', 'company', 'years']):
+            return "I have 1.5+ years of hands-on experience building production-grade AI systems. Currently an AI/ML Engineer at Edysor Edutech, I've built digital avatars with 96% accuracy and VLM pipelines that improved document extraction from 30% to 98%."
+        
+        # Skills / Expertise
+        if any(word in query_lower for word in ['skill', 'expertise', 'specialize', 'know', 'tech']):
+            return "I specialize in Conversational AI, Vision-Language Models, LLM fine-tuning (LoRA/PEFT), RAG systems, and Voice AI. My stack includes Python, PyTorch, LangChain, and I've worked with GPT-4, LLaMA, YOLO, and more."
+        
+        # Projects
+        if any(word in query_lower for word in ['project', 'built', 'created', 'developed', 'production']):
+            return "I've deployed real-time AI systems at enterprise scale — digital avatars with 96% accuracy, VLM pipelines with 98% extraction accuracy, and platforms handling 1000+ concurrent sessions. All with significant cost reductions!"
+        
+        # Contact
+        if any(word in query_lower for word in ['contact', 'email', 'reach', 'hire', 'linkedin']):
+            return "📧 Email: 17ishikajain@gmail.com\n🔗 LinkedIn: Ishika Jain\n📍 Location: Noida, Delhi NCR\n✅ Open to full-time, freelance, and remote opportunities globally!"
+        
+        # Education
+        if any(word in query_lower for word in ['education', 'degree', 'study', 'college', 'gate', 'qualification']):
+            return "I hold a B.Tech in Computer Science & AI, and I'm GATE Qualified 2025 in both CS and Data Science/AI. I also have a research paper published in JAST journal."
+        
+        # Default
+        return "I'm an AI/ML Engineer with 1.5+ years of experience building production AI systems. I'm passionate about solving real-world problems with innovative AI solutions. Ask me about my skills, projects, or what drives me! 🚀"
 
 # Initialize Flask app
 if FLASK_AVAILABLE:
