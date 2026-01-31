@@ -784,6 +784,27 @@ await in askQuestion
             padding: 2.5rem;
         }
 
+        .project-header-with-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover .project-logo {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 6px 20px rgba(0, 217, 255, 0.5);
+        }
+
         .project-title {
             font-size: 1.5rem;
             font-weight: 700;
@@ -793,6 +814,10 @@ await in askQuestion
             -webkit-text-fill-color: transparent;
             background-clip: text;
             transition: all 0.3s ease;
+        }
+
+        .project-header-with-logo .project-title {
+            margin-bottom: 0;
         }
 
         .project-card:hover .project-title {
@@ -1968,9 +1993,13 @@ await in askQuestion
             </div>
             <div class="project-card">
                 <div class="project-content">
-                    <h3 class="project-title">Flappy Bird Game</h3>
+                    <div class="project-header-with-logo">
+                        <img src="flappy-bird-logo.png" alt="Flappy Bird Logo" class="project-logo">
+                        <h3 class="project-title">Flappy Bird Game</h3>
+                    </div>
                     <p class="project-description">
                         Python implementation of the classic Flappy Bird game featuring animated welcome screen, responsive controls, score tracking, and sound effects. Includes enhanced visual elements with gradient effects and improved gameplay mechanics.
+                        <span class="expand-btn" onclick="openModal('flappy-bird')">Read more</span>
                     </p>
                     <div class="project-tech">
                         <span class="tech-badge">Python</span>
@@ -2110,6 +2139,9 @@ await in askQuestion
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
             <h3 id="modalTitle" class="modal-title">Project Title</h3>
+            <div id="modalImageContainer" style="display: none; margin: 20px 0; text-align: center;">
+                <img id="modalImage" src="" alt="Project Demo" style="max-width: 100%; max-height: 400px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 217, 255, 0.3);">
+            </div>
             <p id="modalDescription" class="modal-description">Project description goes here...</p>
             <div id="modalTech" class="modal-tech"></div>
         </div>
@@ -2368,7 +2400,8 @@ await in askQuestion
             'flappy-bird': {
                 title: 'Flappy Bird Game',
                 description: 'Python implementation of the classic Flappy Bird game featuring animated welcome screen, responsive controls, score tracking, and sound effects. Includes enhanced visual elements with gradient effects and improved gameplay mechanics. The game features multiple difficulty modes, power-ups, and leaderboard functionality for enhanced gaming experience.',
-                tech: ['Python', 'Pygame', 'Game Development', 'Animation', 'Sound Effects', 'Game Logic']
+                tech: ['Python', 'Pygame', 'Game Development', 'Animation', 'Sound Effects', 'Game Logic'],
+                image: 'https://miro.medium.com/v2/resize:fit:1100/format:webp/1*yuq6P5aeqkSQKh3voMhAVQ.gif'
             }
         };
 
@@ -2377,6 +2410,17 @@ await in askQuestion
             if (project) {
                 document.getElementById('modalTitle').textContent = project.title;
                 document.getElementById('modalDescription').textContent = project.description;
+                
+                // Handle project image/GIF
+                const imageContainer = document.getElementById('modalImageContainer');
+                const modalImage = document.getElementById('modalImage');
+                if (project.image) {
+                    modalImage.src = project.image;
+                    imageContainer.style.display = 'block';
+                } else {
+                    imageContainer.style.display = 'none';
+                    modalImage.src = '';
+                }
                 
                 const techContainer = document.getElementById('modalTech');
                 techContainer.innerHTML = '';
