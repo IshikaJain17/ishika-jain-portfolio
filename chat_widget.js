@@ -56,7 +56,7 @@ class ChatAssistant {
             <div class="chat-widget-window" id="chatWidgetWindow" style="display: none;">
                 <div class="chat-header">
                     <div class="chat-avatar">
-                        <div class="avatar-img">🤖</div>
+                        <img src="chatbot-logo.png" alt="AI Assistant" class="avatar-img-logo">
                         <div class="status-dot"></div>
                     </div>
                     <div class="chat-info">
@@ -72,7 +72,7 @@ class ChatAssistant {
 
                 <div class="chat-messages" id="chatMessages">
                     <div class="message bot-message">
-                        <div class="message-avatar">🤖</div>
+                        <div class="message-avatar"><img src="chatbot-logo.png" alt="Bot" class="bot-avatar-img"></div>
                         <div class="message-content">
                             <p>Hey! 👋 I'm Ishika's AI assistant. Ask me anything about her experience, skills, projects — or even AI/ML concepts!</p>
                             <div class="quick-actions">
@@ -85,7 +85,7 @@ class ChatAssistant {
                 </div>
 
                 <div class="typing-indicator" id="typingIndicator" style="display: none;">
-                    <div class="message-avatar">🤖</div>
+                    <div class="message-avatar"><img src="chatbot-logo.png" alt="Bot" class="bot-avatar-img"></div>
                     <div class="typing-dots">
                         <span></span>
                         <span></span>
@@ -333,6 +333,21 @@ class ChatAssistant {
                     justify-content: center;
                     font-size: 14px;
                     flex-shrink: 0;
+                    overflow: hidden;
+                }
+
+                .bot-avatar-img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: 50%;
+                }
+
+                .avatar-img-logo {
+                    width: 36px;
+                    height: 36px;
+                    object-fit: cover;
+                    border-radius: 50%;
                 }
 
                 .bot-message .message-avatar {
@@ -722,7 +737,7 @@ class ChatAssistant {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${type}-message`;
 
-        const avatar = type === 'user' ? '👤' : '🤖';
+        const avatar = type === 'user' ? '👤' : '<img src="chatbot-logo.png" alt="Bot" class="bot-avatar-img">';
         
         let sourceHTML = '';
         if (sources && sources.length > 0) {
