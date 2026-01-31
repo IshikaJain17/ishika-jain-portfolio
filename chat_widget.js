@@ -17,6 +17,7 @@ class ChatAssistant {
         }
         this.isOpen = false;
         this.isProcessing = false;
+        this.conversationHistory = []; // Track conversation for context
         this.setupChatWidget();
         this.checkSystemStatus();
     }
@@ -73,11 +74,11 @@ class ChatAssistant {
                     <div class="message bot-message">
                         <div class="message-avatar">🤖</div>
                         <div class="message-content">
-                            <p>Hi! I'm Ishika's AI assistant. Ask me anything about her experience, skills, or projects!</p>
+                            <p>Hey! 👋 I'm Ishika's AI assistant. Ask me anything about her experience, skills, projects — or even AI/ML concepts!</p>
                             <div class="quick-actions">
-                                <button class="quick-btn" data-question="What programming languages does Ishika know?">Programming Skills</button>
-                                <button class="quick-btn" data-question="Tell me about Ishika's AI projects">AI Projects</button>
-                                <button class="quick-btn" data-question="What work experience does Ishika have?">Experience</button>
+                                <button class="quick-btn" data-question="What's your experience with LLMs and RAG systems?">LLM & RAG</button>
+                                <button class="quick-btn" data-question="Tell me about your production AI projects">AI Projects</button>
+                                <button class="quick-btn" data-question="What makes you stand out as an AI engineer?">Why Hire Me?</button>
                             </div>
                         </div>
                     </div>
@@ -678,6 +679,10 @@ class ChatAssistant {
 
         this.isProcessing = true;
         this.addMessage(question, 'user');
+        
+        // Add user message to conversation history
+        this.conversationHistory.push({ role: 'user', content: question });
+        
         this.showTypingIndicator();
 
         try {
@@ -688,7 +693,7 @@ class ChatAssistant {
                 },
                 body: JSON.stringify({ 
                     question: question,
-                    n_results: 3
+                    history: this.conversationHistory.slice(-6) // Send last 6 messages for context
                 })
             });
 
@@ -696,6 +701,8 @@ class ChatAssistant {
             
             if (response.ok) {
                 this.addMessage(data.answer, 'bot', data.sources);
+                // Add assistant response to conversation history
+                this.conversationHistory.push({ role: 'assistant', content: data.answer });
             } else {
                 this.addMessage(`Sorry, I encountered an error: ${data.error}`, 'bot');
             }

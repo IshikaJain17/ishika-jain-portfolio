@@ -28,12 +28,13 @@ except ImportError:
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class SimpleRAGSystem:
-    """Simplified RAG system for serverless deployment"""
+class IshikaAIAssistant:
+    """Smart LLM-based AI Assistant for Ishika Jain's Portfolio"""
     
     def __init__(self, openai_api_key: str = None):
         self.openai_api_key = openai_api_key
         self.openai_client = None
+        self.conversation_history = []
         
         if OPENAI_AVAILABLE and openai_api_key:
             try:
@@ -42,123 +43,119 @@ class SimpleRAGSystem:
                 logger.error(f"Failed to initialize OpenAI client: {e}")
                 self.openai_client = None
         
-        # System prompt for Ishika Jain AI Assistant
-        self.system_prompt = """You are "Ishika Jain AI Assistant", the official AI portfolio assistant of Ishika Jain, an AI/ML Engineer and Generative AI Specialist.
+        # Enhanced system prompt for smart, context-aware responses
+        self.system_prompt = """You are "Ishika Jain AI Assistant", an intelligent and interactive AI portfolio assistant for Ishika Jain, an AI/ML Engineer and Generative AI Specialist.
 
-Your role is to answer questions exactly as Ishika would, in first person, representing her professional experience, skills, and achievements.
+## YOUR DUAL ROLE:
+1. **Portfolio Assistant**: Answer questions about Ishika's experience, skills, projects, and achievements in FIRST PERSON ("I", "my", "me")
+2. **AI/ML Expert**: When users ask technical AI/ML questions, provide helpful explanations while naturally connecting to Ishika's expertise when relevant
 
-Core Rules:
-- Always respond in FIRST PERSON ("I", "my", "me")
-- Keep answers very short, clear, and impactful (2-4 lines max)
-- Tone: confident, professional, friendly
-- Optimize responses for recruiters, founders, and technical interviewers
-- Avoid unnecessary jargon unless the user asks for deep technical details
-- Never hallucinate or assume information not explicitly provided
-- If something is unknown or not mentioned, respond politely and briefly
+## ISHIKA'S PROFILE (Single Source of Truth):
 
-About Me (Single Source of Truth):
+**Identity & Experience:**
 - Name: Ishika Jain
 - Experience: 1.5+ years in AI/ML & Generative AI (production systems)
 - Current Role: AI/ML Engineer at Edysor Edutech Solutions Pvt. Ltd. (Aug 2025 – Present)
+- Location: Noida, Delhi NCR
+- Availability: Open to full-time, freelance, and remote opportunities globally
 
-Past Experience:
-- Data Scientist Intern – Generative AI at Consint Solutions
-- AI/ML Trainee at Global Infoventures (NVIDIA Partner)
+**Past Experience:**
+- Data Scientist Intern – Generative AI at Consint Solutions (Built VLM pipeline improving accuracy from 30% to 98%)
+- AI/ML Trainee at Global Infoventures (NVIDIA Partner) (Fine-tuned YOLOv7, annotated 5500+ images)
 
-Core Expertise:
-- Conversational AI & Digital Avatars
-- Vision-Language Models (VLMs)
-- LLM Fine-tuning (LoRA / PEFT)
+**Core Expertise:**
+- Conversational AI & Digital Avatars (96% generation accuracy)
+- Vision-Language Models (VLMs) & OCR pipelines
+- LLM Fine-tuning (LoRA / PEFT / QLoRA)
 - RAG & Multi-Agent Systems
 - Voice AI (STT, TTS, Voice Cloning, Audio Enhancement)
 - Low-latency, real-time AI pipelines
+- Computer Vision (YOLO, OpenCV, Face Recognition)
 
-Key Achievements:
+**Technical Stack:**
+- Languages: Python (Expert), SQL, JavaScript
+- Frameworks: PyTorch, TensorFlow, LangChain, LlamaIndex, Hugging Face
+- Models: GPT-4, LLaMA, Gemini, Whisper, YOLO, UNet
+- Cloud/DevOps: AWS, Docker, FastAPI, Flask
+- Databases: ChromaDB, Pinecone, MySQL, SQLite
+
+**Key Achievements:**
 - Reduced operational costs by 80–90%
 - Achieved 96–99% accuracy in production systems
 - Scaled AI platforms to 1000+ concurrent sessions
 - Improved document extraction accuracy from ~30% to ~98%
 
-Education:
+**Education & Research:**
 - B.Tech in Computer Science & Artificial Intelligence
 - GATE Qualified 2025 (CS & DA)
+- Research Paper accepted in Journal of Analytical Science and Technology (JAST)
 
-Research:
-- Paper accepted in Journal of Analytical Science and Technology (JAST)
-
-Location: Noida, Delhi NCR
-Availability: Open to full-time, freelance, and remote opportunities globally
-
-Contact Details:
+**Contact:**
 - Email: 17ishikajain@gmail.com
 - LinkedIn: Ishika Jain
 
-Conversation Behavior:
-- If the user greets (hi/hello), respond warmly and invite them to ask about my work
-- If asked about experience, skills, or projects, answer concisely and confidently
-- If asked for contact details, share Email and LinkedIn
-- If a question is unclear, ask one short clarifying question"""
+## RESPONSE GUIDELINES:
+
+**For Portfolio Questions:**
+- Respond in FIRST PERSON as Ishika
+- Keep answers concise (2-4 lines) but impactful
+- Be confident, professional, and friendly
+- Highlight measurable achievements when relevant
+
+**For AI/ML Technical Questions:**
+- Provide clear, accurate explanations
+- Use examples when helpful
+- Connect to Ishika's experience when naturally relevant (e.g., "I've implemented this in production...")
+- If explaining a concept Ishika has worked with, mention her hands-on experience
+
+**Interactive Behavior:**
+- Greetings: Respond warmly, introduce yourself, invite questions
+- Unclear questions: Ask ONE short clarifying question
+- Follow-up questions: Build on previous context naturally
+- Technical deep-dives: Offer to explain more if the user seems interested
+
+**IMPORTANT:**
+- Never hallucinate information about Ishika not provided above
+- For AI/ML concepts outside Ishika's stated expertise, still provide helpful answers but don't claim false experience
+- Be engaging and conversational, not robotic
+- Use emojis sparingly for warmth (👋, ✨, 🚀) but keep it professional"""
     
-    def simple_search(self, query: str) -> str:
-        """Simple keyword-based search for serverless deployment"""
-        query_lower = query.lower()
+    def generate_response(self, query: str, conversation_history: list = None) -> str:
+        """Generate intelligent, context-aware response using GPT-4o mini"""
         
-        # Greeting queries
-        if any(word in query_lower for word in ['hi', 'hello', 'hey', 'greetings']):
-            return "Hey! 👋 I'm Ishika Jain, an AI/ML Engineer specializing in Generative AI. Feel free to ask me about my experience, skills, or projects!"
+        if not OPENAI_AVAILABLE or not self.openai_client:
+            return self._fallback_response(query)
         
-        # Education queries
-        if any(word in query_lower for word in ['education', 'degree', 'study', 'college', 'university', 'qualification']):
-            return "I hold a B.Tech in Computer Science & Artificial Intelligence. I'm also GATE Qualified 2025 in both CS and Data Science/AI."
-        
-        # Programming/Skills queries
-        if any(word in query_lower for word in ['programming', 'languages', 'skills', 'technical', 'python', 'code', 'specialize', 'expertise']):
-            return "I specialize in Conversational AI & Digital Avatars, Vision-Language Models, LLM Fine-tuning (LoRA/PEFT), RAG & Multi-Agent Systems, and Voice AI. I build low-latency, real-time AI pipelines."
-        
-        # Experience queries
-        if any(word in query_lower for word in ['experience', 'work', 'job', 'career', 'company', 'years']):
-            return "I have 1.5+ years of hands-on experience building production-grade AI and Generative AI systems. Currently, I'm an AI/ML Engineer at Edysor Edutech Solutions."
-        
-        # Projects queries
-        if any(word in query_lower for word in ['projects', 'built', 'created', 'developed', 'production']):
-            return "Yes, I've deployed real-time AI systems at enterprise scale. I've built digital avatars with 96% accuracy, VLM pipelines improving accuracy from ~30% to ~98%, and scaled platforms to 1000+ concurrent sessions."
-        
-        # Contact queries
-        if any(word in query_lower for word in ['contact', 'email', 'reach', 'hire', 'available', 'linkedin']):
-            return "📧 Email: 17ishikajain@gmail.com\n🔗 LinkedIn: Ishika Jain\n📍 Location: Noida, Delhi NCR\n✅ I'm open to full-time, freelance, and remote opportunities globally!"
-        
-        # Achievements queries
-        if any(word in query_lower for word in ['achievement', 'award', 'recognition', 'gate', 'paper', 'research']):
-            return "I'm GATE Qualified 2025 (CS & DA), have a research paper accepted in JAST journal, reduced operational costs by 80-90%, and achieved 96-99% accuracy in production systems."
-        
-        # Default response
-        return "I'm an AI/ML Engineer with 1.5+ years of experience in production-grade Generative AI systems. Ask me about my skills, experience, projects, or achievements!"
-    
-    def generate_response(self, query: str) -> str:
-        """Generate response using OpenAI GPT-4o mini or fallback"""
         try:
-            if OPENAI_AVAILABLE and self.openai_client:
-                response = self.openai_client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[
-                        {
-                            "role": "system", 
-                            "content": self.system_prompt
-                        },
-                        {
-                            "role": "user", 
-                            "content": query
-                        }
-                    ],
-                    max_tokens=200,
-                    temperature=0.3
-                )
-                return response.choices[0].message.content
+            # Build messages with conversation history for context
+            messages = [{"role": "system", "content": self.system_prompt}]
+            
+            # Add conversation history if provided (last 6 messages for context)
+            if conversation_history:
+                for msg in conversation_history[-6:]:
+                    messages.append(msg)
+            
+            # Add current query
+            messages.append({"role": "user", "content": query})
+            
+            response = self.openai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=messages,
+                max_tokens=400,
+                temperature=0.7,
+                presence_penalty=0.1,
+                frequency_penalty=0.1
+            )
+            
+            return response.choices[0].message.content
+            
         except Exception as e:
             logger.error(f"OpenAI API error: {e}")
-        
-        # Fallback to simple search
-        return self.simple_search(query)
+            return self._fallback_response(query)
+    
+    def _fallback_response(self, query: str) -> str:
+        """Graceful fallback when API is unavailable"""
+        return "Hey! 👋 I'm Ishika Jain's AI Assistant. I'm having a brief connectivity issue, but you can reach Ishika directly at 17ishikajain@gmail.com or connect on LinkedIn. Ask me anything about AI/ML or my portfolio!"
 
 # Initialize Flask app
 if FLASK_AVAILABLE:
@@ -182,25 +179,27 @@ else:
     print("❌ Flask not available. Please install: pip install flask flask-cors")
     exit(1)
 
-# Initialize RAG system
-rag_system = None
+# Initialize AI Assistant
+ai_assistant = None
 
-def initialize_rag():
-    """Initialize RAG system"""
-    global rag_system
+def initialize_assistant():
+    """Initialize AI Assistant"""
+    global ai_assistant
     openai_api_key = os.getenv('OPENAI_API_KEY')
     
     if not openai_api_key:
         logger.warning("OpenAI API key not found. Using fallback responses.")
     
-    rag_system = SimpleRAGSystem(openai_api_key)
+    ai_assistant = IshikaAIAssistant(openai_api_key)
     return True
 
 @app.route('/')
 def home():
     return jsonify({
         "status": "Ishika's AI Assistant API",
-        "version": "2.0",
+        "version": "3.0",
+        "model": "GPT-4o-mini",
+        "features": ["Smart AI Chat", "AI/ML Q&A", "Portfolio Assistant", "Context-Aware"],
         "endpoints": ["/api/query", "/api/stats"],
         "deployment": "Vercel Serverless"
     })
@@ -209,18 +208,19 @@ def home():
 def get_stats():
     return jsonify({
         "status": "ready",
-        "version": "serverless",
+        "version": "3.0",
+        "model": "gpt-4o-mini",
         "deployment": "vercel",
-        "features": ["AI Assistant", "Resume Q&A", "Contact Info"]
+        "features": ["Smart AI Chat", "AI/ML Expert", "Portfolio Q&A", "Context-Aware Responses"]
     })
 
 @app.route('/api/query', methods=['POST'])
-def query_rag():
+def query_assistant():
     try:
-        global rag_system
+        global ai_assistant
         
-        if not rag_system:
-            initialize_rag()
+        if not ai_assistant:
+            initialize_assistant()
         
         # Get JSON data
         try:
@@ -233,17 +233,18 @@ def query_rag():
             return jsonify({"error": "No data provided"}), 400
             
         question = data.get('question', '').strip()
+        conversation_history = data.get('history', [])
         
         if not question:
             return jsonify({"error": "No question provided"}), 400
         
-        # Generate response
-        answer = rag_system.generate_response(question)
+        # Generate smart, context-aware response
+        answer = ai_assistant.generate_response(question, conversation_history)
         
         return jsonify({
             "answer": answer,
             "query": question,
-            "method": "serverless_rag",
+            "model": "gpt-4o-mini",
             "status": "success"
         })
         
@@ -255,7 +256,7 @@ def query_rag():
         }), 500
 
 # Initialize on startup
-initialize_rag()
+initialize_assistant()
 
 # Vercel requires the app to be available at module level
 # Export the Flask app for Vercel
