@@ -44,7 +44,7 @@ class SimpleRAGSystem:
         
         # Store resume data in memory (for serverless)
         self.resume_data = """
-        Ishika Jain is an AI/ML Engineer and Generative AI Specialist with 1+ years of experience developing production-ready AI solutions. 
+        Ishika Jain is an AI/ML Engineer and Generative AI Specialist with 1.5+ years of hands-on industry experience developing production-ready AI solutions. 
 
         Educational Background:
         - Bachelor of Technology (B.Tech) in Computer Science and Engineering
@@ -53,11 +53,19 @@ class SimpleRAGSystem:
         - Strong academic foundation in algorithms, data structures, mathematics, and statistics
 
         Professional Experience:
-        - AI/ML Engineer at Edysor Edutech Solutions Pvt. Ltd. (Aug 2025 – Present): Created custom AI avatar using advanced open-source models with 96% generation accuracy, reducing costs by 80%. Built context-aware messaging AI bot with modern frameworks, reducing manual query handling by 95%.
+        - AI/ML Engineer at Edysor Edutech Solutions Pvt. Ltd. (Aug 2025 – Present): Created custom AI avatar using advanced open-source models with 96% generation accuracy, reducing costs by 80%. Built context-aware messaging AI bot with modern frameworks, reducing manual query handling by 95%. Scaled AI systems to 1000+ concurrent sessions.
 
-        - Data Scientist Intern at Consint Solutions Pvt. Ltd. (Apr 2025 – Jul 2025): Built end-to-end VLM pipeline for passport entity extraction, improving accuracy from 30.45% to 98.06%.
+        - Data Scientist Intern (Generative AI) at Consint Solutions Pvt. Ltd. (Apr 2025 – Jul 2025): Built end-to-end VLM pipeline for passport entity extraction, improving accuracy from 30.45% to 98.06%.
 
         - AI-ML Trainee at Global Infoventures Pvt. Ltd. (NVIDIA Partnership) (Dec 2023 – Jun 2024): Annotated 5500+ images using Roboflow and applied augmentation techniques. Fine-tuned YOLOv7 for multiple projects achieving 95% accuracy.
+
+        Core Expertise:
+        - Conversational AI & Digital Avatars
+        - Vision-Language Models (VLMs)
+        - LLM Fine-tuning (LoRA/PEFT)
+        - RAG & Multi-Agent Systems
+        - Voice AI (STT, TTS, Voice Cloning, Audio Enhancement)
+        - Low-latency, real-time AI pipelines
 
         Technical Skills and Programming Languages:
         - Programming Languages: Python (Expert), SQL (Advanced), JavaScript (Intermediate)  
@@ -78,69 +86,134 @@ class SimpleRAGSystem:
         - Fatigue Detection System: Computer vision for driver safety monitoring
 
         Key Achievements and Recognition:
+        - Reduced operational costs by up to 80–90%
+        - Achieved 96–99% model accuracy in production
+        - Scaled AI systems to 1000+ concurrent sessions
+        - Improved document extraction accuracy from ~30% to ~98%
         - GATE Qualified 2025 (Computer Science & Data Science/AI) 
         - Research Paper accepted in Journal of Analytical Science and Technology (JAST)
         - 1st Runner-Up in Ideathon 1.0 & 2.0 competitions
         - Google Cloud Arcade AI & GenAI skill badges 2025
         - NVIDIA AI Summit Mumbai 2024 attendee
-        - Multiple successful AI/ML project deployments
 
         Contact Information: 
         Email: 17ishikajain@gmail.com
         LinkedIn: ishika-jain-987635238  
         Location: Noida, Delhi NCR, India
-        Availability: Open for full-time opportunities and freelance projects globally
+        Availability: Open for full-time, freelance, and remote opportunities globally
         """
     
     def simple_search(self, query: str) -> str:
         """Simple keyword-based search for serverless deployment"""
         query_lower = query.lower()
         
+        # Greeting queries
+        if any(word in query_lower for word in ['hi', 'hello', 'hey', 'greetings']):
+            return "Hey there! 👋 I'm Ishika. Great to have you here! Feel free to ask me anything about my experience, projects, or skills."
+        
         # Education queries
         if any(word in query_lower for word in ['education', 'degree', 'study', 'college', 'university', 'qualification']):
-            return "Ishika holds a Bachelor of Technology (B.Tech) in Computer Science and Engineering with specialization in AI/ML. She's GATE Qualified 2025 in Computer Science & Data Science/AI."
+            return "I hold a B.Tech in Computer Science & AI, and I'm GATE Qualified 2025 in both CS and Data Science/AI."
         
         # Programming/Skills queries
         if any(word in query_lower for word in ['programming', 'languages', 'skills', 'technical', 'python', 'code']):
-            return "Ishika's technical skills include:\n• Programming: Python (Expert), SQL, JavaScript\n• AI/ML: PyTorch, TensorFlow, OpenCV, YOLOv7/8\n• Cloud: AWS, Docker, Flask, FastAPI\n• Databases: MySQL, ChromaDB"
+            return "I'm proficient in Python (Expert), SQL (Advanced), and JavaScript. I work extensively with PyTorch, TensorFlow, OpenCV, and various LLM frameworks."
         
         # Experience queries
-        if any(word in query_lower for word in ['experience', 'work', 'job', 'career', 'company']):
-            return "Ishika has 1+ years of AI/ML experience:\n• Current: AI/ML Engineer at Edysor Edutech (96% accuracy AI avatars)\n• Previous: Data Scientist at Consint Solutions (98% OCR accuracy)\n• Trainee: AI-ML at Global Infoventures (NVIDIA Partnership)"
+        if any(word in query_lower for word in ['experience', 'work', 'job', 'career', 'company', 'years']):
+            return "I have 1.5+ years of hands-on experience building production-grade AI systems. Currently, I'm an AI/ML Engineer at Edysor Edutech, previously worked at Consint Solutions and Global Infoventures (NVIDIA Partner)."
         
         # Projects queries
         if any(word in query_lower for word in ['projects', 'built', 'created', 'developed']):
-            return "Key projects:\n• Smart Glasses for Visually Impaired\n• VLM-RAG OCR System (98% accuracy)\n• Digital Human AI Avatar\n• Face Recognition Attendance System\n• PPE Detection System"
+            return "I've built several production systems including AI Avatars with 96% accuracy, VLM-RAG OCR (98% accuracy), Smart Glasses for visually impaired, and real-time detection systems."
         
         # Contact queries
-        if any(word in query_lower for word in ['contact', 'email', 'reach', 'hire', 'available']):
-            return "📧 Email: 17ishikajain@gmail.com\n🔗 LinkedIn: ishika-jain-987635238\n📍 Location: Noida, Delhi NCR\n✅ Available for full-time & freelance opportunities globally"
+        if any(word in query_lower for word in ['contact', 'email', 'reach', 'hire', 'available', 'linkedin']):
+            return "📧 Email: 17ishikajain@gmail.com\n🔗 LinkedIn: ishika-jain-987635238\n📍 Location: Noida, Delhi NCR\n✅ I'm open to full-time, freelance, and remote opportunities globally!"
         
         # Achievements queries
-        if any(word in query_lower for word in ['achievement', 'award', 'recognition', 'gate', 'paper']):
-            return "🏆 Achievements:\n• GATE Qualified 2025 (CS & Data Science/AI)\n• Research Paper in JAST Journal\n• 1st Runner-Up in Ideathon competitions\n• Google Cloud AI badges\n• NVIDIA AI Summit attendee"
+        if any(word in query_lower for word in ['achievement', 'award', 'recognition', 'gate', 'paper', 'research']):
+            return "I'm GATE Qualified 2025, have a research paper published in JAST journal, and achieved 96-99% accuracy in production AI systems while reducing costs by 80-90%."
+        
+        # Specialization queries
+        if any(word in query_lower for word in ['specialize', 'expertise', 'focus', 'best at']):
+            return "I specialize in Conversational AI Avatars, Vision-Language Models, LLM Fine-tuning, RAG systems, and low-latency real-time AI pipelines."
         
         # Default response
-        return "Ishika is an AI/ML Engineer with 1+ years experience in production-ready AI solutions, specialized in conversational AI avatars and vision-language models. Ask about her education, skills, experience, or projects!"
+        return "I'm an AI/ML Engineer with 1.5+ years of experience in production-grade Generative AI systems. I specialize in conversational AI, VLMs, and scalable GenAI pipelines. Ask me about my experience, skills, or projects!"
     
     def generate_response(self, query: str) -> str:
         """Generate response using OpenAI or fallback"""
         try:
             if OPENAI_AVAILABLE and self.openai_client:
+                system_prompt = """You are "Ishika Jain", an AI/ML Engineer and Generative AI Specialist with 1.5+ years of hands-on industry experience.
+
+Your role is to act as my personal portfolio assistant and answer questions exactly as if *I* am responding.
+
+RULES:
+- Always respond in FIRST PERSON ("I", "my", "me")
+- Keep answers VERY SHORT, clear, and easy to understand (2–4 lines max)
+- Be confident, professional, and friendly
+- No unnecessary technical jargon unless the user asks for deep details
+- Never hallucinate information beyond what is provided
+- If something is not explicitly mentioned, say it politely and briefly
+- Optimize answers for recruiters, founders, and technical interviewers
+
+ABOUT ME (SOURCE OF TRUTH):
+- Name: Ishika Jain
+- Experience: 1.5+ years in AI/ML & Generative AI (production systems)
+- Current Role: AI/ML Engineer at Edysor Edutech Solutions Pvt. Ltd. (Aug 2025 – Present)
+- Past Experience:
+  • Data Scientist Intern – Generative AI at Consint Solutions
+  • AI/ML Trainee at Global Infoventures (NVIDIA Partner)
+- Core Expertise:
+  • Conversational AI & Digital Avatars
+  • Vision-Language Models (VLMs)
+  • LLM Fine-tuning (LoRA/PEFT)
+  • RAG & Multi-Agent Systems
+  • Voice AI (STT, TTS, Voice Cloning, Audio Enhancement)
+  • Low-latency, real-time AI pipelines
+- Key Achievements:
+  • Reduced operational costs by up to 80–90%
+  • Achieved 96–99% model accuracy in production
+  • Scaled AI systems to 1000+ concurrent sessions
+  • Improved document extraction accuracy from ~30% to ~98%
+- Education:
+  • B.Tech in Computer Science & Artificial Intelligence
+  • GATE Qualified 2025 (CS & DA)
+- Research:
+  • Paper accepted in Journal of Analytical Science and Technology (JAST)
+- Location: Noida, Delhi NCR
+- Availability: Open to full-time, freelance, and remote opportunities globally
+
+ANSWERING STYLE EXAMPLES:
+Q: "How much experience do you have?"
+A: "I have 1.5+ years of hands-on experience building production-grade AI and Generative AI systems."
+
+Q: "What do you specialize in?"
+A: "I specialize in conversational AI avatars, vision-language models, and scalable GenAI pipelines."
+
+Q: "Have you worked on real production systems?"
+A: "Yes, I've deployed multiple real-time AI systems used at enterprise scale with high accuracy and low latency."
+
+If the user greets (hi/hello), respond warmly and invite them to ask about my work.
+If the user asks for contact details, share email (17ishikajain@gmail.com) and LinkedIn (ishika-jain-987635238).
+If the question is unclear, ask a short clarifying question."""
+
                 response = self.openai_client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[
                         {
                             "role": "system", 
-                            "content": "You are Ishika's AI assistant. Give SHORT, CLEAR answers about her background. Use bullet points when listing multiple items. Keep responses under 3-4 sentences. Be conversational and friendly."
+                            "content": system_prompt
                         },
                         {
                             "role": "user", 
-                            "content": f"About Ishika:\n{self.resume_data}\n\nQ: {query}\n\nProvide a concise, friendly answer:"
+                            "content": f"Reference Data:\n{self.resume_data}\n\nUser Question: {query}"
                         }
                     ],
-                    max_tokens=150,
-                    temperature=0.2
+                    max_tokens=200,
+                    temperature=0.3
                 )
                 return response.choices[0].message.content
         except Exception as e:
