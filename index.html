@@ -992,6 +992,14 @@ await in askQuestion
             align-items: center;
             justify-content: center;
             font-size: 1.8rem;
+            overflow: hidden;
+        }
+
+        .achievement-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .achievement-title {
@@ -2025,7 +2033,9 @@ await in askQuestion
         </div>
         <div class="achievements-grid">
             <div class="achievement-card">
-                <div class="achievement-icon">🎓</div>
+                <div class="achievement-icon">
+                    <img src="gate-logo.png" alt="GATE Logo" class="achievement-logo">
+                </div>
                 <h3 class="achievement-title">GATE Qualified 2025</h3>
                 <p class="achievement-description">Computer Science (CS) & Data Science/AI (DA)</p>
             </div>
