@@ -81,6 +81,7 @@ class IshikaAIAssistant:
 
 **Key Achievements:**
 - Reduced operational costs by 80–90%
+- Reduced product costs by 98% through AI automation
 - Achieved 96–99% accuracy in production systems
 - Scaled AI platforms to 1000+ concurrent sessions
 - Improved document extraction accuracy from ~30% to ~98%
