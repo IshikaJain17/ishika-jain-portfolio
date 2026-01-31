@@ -140,7 +140,7 @@ class IshikaAIAssistant:
         """Generate intelligent, context-aware response using GPT-4o mini"""
         
         if not OPENAI_AVAILABLE or not self.openai_client:
-            return self._fallback_response(query)
+            return self._smart_fallback(query)
         
         try:
             # Build messages with conversation history for context
