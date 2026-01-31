@@ -103,7 +103,7 @@ class ChatAssistant {
                         </button>
                     </div>
                     <div class="input-footer">
-                        <span class="powered-by">Powered by OpenAI</span>
+                        <span class="powered-by">Powered by Ishika Jain</span>
                     </div>
                 </div>
             </div>
