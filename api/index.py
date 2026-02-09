@@ -11,12 +11,6 @@ from typing import List, Dict
 import hashlib
 
 try:
-    import requests as http_requests
-    REQUESTS_AVAILABLE = True
-except ImportError:
-    REQUESTS_AVAILABLE = False
-
-try:
     from flask import Flask, request, jsonify
     from flask_cors import CORS
     FLASK_AVAILABLE = True
@@ -245,7 +239,7 @@ def initialize_assistant():
     global ai_assistant
     openai_api_key = os.getenv('OPENAI_API_KEY')
     
-    if not openai_api_key:
+    if not openai_api_4key:
         logger.warning("OpenAI API key not found. Using fallback responses.")
     
     ai_assistant = IshikaAIAssistant(openai_api_key)
@@ -272,38 +266,6 @@ def get_stats():
         "features": ["Smart AI Chat", "AI/ML Expert", "Portfolio Q&A", "Context-Aware Responses"]
     })
 
-def verify_hcaptcha(token: str) -> bool:
-    """Verify hCaptcha token with hCaptcha servers (FREE service)"""
-    if not token:
-        return True  # Skip verification if no token (for backwards compatibility)
-    
-    # Get hCaptcha secret key from environment variable
-    # Get your FREE keys at: https://www.hcaptcha.com/
-    hcaptcha_secret = os.getenv('HCAPTCHA_SECRET_KEY')
-    
-    if not hcaptcha_secret:
-        logger.warning("HCAPTCHA_SECRET_KEY not set. Skipping verification.")
-        return True  # Skip if not configured
-    
-    if not REQUESTS_AVAILABLE:
-        logger.warning("requests library not available. Skipping hCaptcha verification.")
-        return True
-    
-    try:
-        response = http_requests.post(
-            'https://hcaptcha.com/siteverify',
-            data={
-                'secret': hcaptcha_secret,
-                'response': token
-            },
-            timeout=10
-        )
-        result = response.json()
-        return result.get('success', False)
-    except Exception as e:
-        logger.error(f"hCaptcha verification error: {e}")
-        return True  # Allow on verification error to not block users
-
 @app.route('/api/query', methods=['POST'])
 def query_assistant():
     try:
@@ -321,11 +283,6 @@ def query_assistant():
             
         if not data:
             return jsonify({"error": "No data provided"}), 400
-        
-        # Verify hCaptcha token (FREE spam protection)
-        hcaptcha_token = data.get('hcaptcha_token')
-        if hcaptcha_token and not verify_hcaptcha(hcaptcha_token):
-            return jsonify({"error": "Captcha verification failed. Please try again."}), 403
             
         question = data.get('question', '').strip()
         conversation_history = data.get('history', [])

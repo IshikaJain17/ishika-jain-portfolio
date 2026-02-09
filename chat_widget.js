@@ -18,13 +18,6 @@ class ChatAssistant {
         this.isOpen = false;
         this.isProcessing = false;
         this.conversationHistory = []; // Track conversation for context
-        
-        // hCaptcha configuration (FREE - get your keys at https://www.hcaptcha.com/)
-        // Your hCaptcha site key
-        this.hcaptchaSiteKey = 'a20470ce-6b4e-4462-95b0-51204d52e82c';
-        this.hcaptchaToken = null;
-        this.hcaptchaVerified = false;
-        
         this.setupChatWidget();
         this.checkSystemStatus();
     }
@@ -33,8 +26,6 @@ class ChatAssistant {
         this.createChatWidget();
         this.setupEventListeners();
         this.addChatStyles();
-        // Initialize hCaptcha after DOM is ready
-        setTimeout(() => this.initHcaptcha(), 500);
     }
 
     createChatWidget() {
@@ -107,8 +98,6 @@ class ChatAssistant {
                             </svg>
                         </button>
                     </div>
-                    <!-- Invisible hCaptcha (FREE spam protection) -->
-                    <div id="hcaptcha-container" class="h-captcha" data-sitekey="a20470ce-6b4e-4462-95b0-51204d52e82c" data-size="invisible" data-callback="onHcaptchaSuccess"></div>
                 </div>
             </div>
         `;
@@ -720,36 +709,6 @@ class ChatAssistant {
         }
     }
 
-    // Initialize hCaptcha when chat widget is ready
-    initHcaptcha() {
-        if (typeof hcaptcha !== 'undefined') {
-            // Set up global callback for hCaptcha
-            window.onHcaptchaSuccess = (token) => {
-                this.hcaptchaToken = token;
-                this.hcaptchaVerified = true;
-                // If there's a pending question, send it now
-                if (this.pendingQuestion) {
-                    this.sendQuestionWithCaptcha(this.pendingQuestion);
-                    this.pendingQuestion = null;
-                }
-            };
-            
-            // Render invisible hCaptcha
-            try {
-                const container = document.getElementById('hcaptcha-container');
-                if (container && !container.hasChildNodes()) {
-                    hcaptcha.render('hcaptcha-container', {
-                        sitekey: this.hcaptchaSiteKey,
-                        size: 'invisible',
-                        callback: 'onHcaptchaSuccess'
-                    });
-                }
-            } catch (e) {
-                console.log('hCaptcha already rendered or not available');
-            }
-        }
-    }
-
     async sendMessage() {
         const chatInput = document.getElementById('chatInput');
         if (!chatInput || !chatInput.value.trim() || this.isProcessing) return;
@@ -763,57 +722,24 @@ class ChatAssistant {
     async askQuestion(question) {
         if (this.isProcessing) return;
 
-        // Check if hCaptcha verification is needed (only on first message)
-        if (!this.hcaptchaVerified && typeof hcaptcha !== 'undefined' && this.conversationHistory.length === 0) {
-            this.isProcessing = true;
-            this.addMessage(question, 'user');
-            this.showTypingIndicator();
-            this.pendingQuestion = question;
-            
-            try {
-                // Trigger invisible hCaptcha
-                hcaptcha.execute();
-            } catch (e) {
-                // If hCaptcha fails, proceed without it
-                console.log('hCaptcha not available, proceeding without verification');
-                this.hcaptchaVerified = true;
-                await this.sendQuestionWithCaptcha(question);
-            }
-            return;
-        }
-
-        await this.sendQuestionWithCaptcha(question);
-    }
-
-    async sendQuestionWithCaptcha(question) {
-        if (!this.isProcessing) {
-            this.isProcessing = true;
-            this.addMessage(question, 'user');
-            this.showTypingIndicator();
-        }
+        this.isProcessing = true;
+        this.addMessage(question, 'user');
         
         // Add user message to conversation history
-        if (!this.conversationHistory.find(m => m.content === question && m.role === 'user')) {
-            this.conversationHistory.push({ role: 'user', content: question });
-        }
+        this.conversationHistory.push({ role: 'user', content: question });
+        
+        this.showTypingIndicator();
 
         try {
-            const requestBody = { 
-                question: question,
-                history: this.conversationHistory.slice(-6) // Send last 6 messages for context
-            };
-            
-            // Include hCaptcha token if available
-            if (this.hcaptchaToken) {
-                requestBody.hcaptcha_token = this.hcaptchaToken;
-            }
-
             const response = await fetch(`${this.apiUrl}/query`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(requestBody)
+                body: JSON.stringify({ 
+                    question: question,
+                    history: this.conversationHistory.slice(-6) // Send last 6 messages for context
+                })
             });
 
             const data = await response.json();
