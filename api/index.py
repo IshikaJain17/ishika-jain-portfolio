@@ -239,7 +239,7 @@ def initialize_assistant():
     global ai_assistant
     openai_api_key = os.getenv('OPENAI_API_KEY')
     
-    if not openai_api_4key:
+    if not openai_api_key:
         logger.warning("OpenAI API key not found. Using fallback responses.")
     
     ai_assistant = IshikaAIAssistant(openai_api_key)
