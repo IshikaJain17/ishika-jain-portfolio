@@ -21,7 +21,7 @@ class ChatAssistant {
         
         // hCaptcha configuration (FREE - get your keys at https://www.hcaptcha.com/)
         // Your hCaptcha site key
-        this.hcaptchaSiteKey = '7fdcbe82-f100-408c-b068-f6446c1ec48a';
+        this.hcaptchaSiteKey = 'a20470ce-6b4e-4462-95b0-51204d52e82c';
         this.hcaptchaToken = null;
         this.hcaptchaVerified = false;
         
@@ -108,7 +108,7 @@ class ChatAssistant {
                         </button>
                     </div>
                     <!-- Invisible hCaptcha (FREE spam protection) -->
-                    <div id="hcaptcha-container" class="h-captcha" data-sitekey="7fdcbe82-f100-408c-b068-f6446c1ec48a" data-size="invisible" data-callback="onHcaptchaSuccess"></div>
+                    <div id="hcaptcha-container" class="h-captcha" data-sitekey="a20470ce-6b4e-4462-95b0-51204d52e82c" data-size="invisible" data-callback="onHcaptchaSuccess"></div>
                 </div>
             </div>
         `;
