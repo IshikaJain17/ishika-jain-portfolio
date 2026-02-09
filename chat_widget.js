@@ -20,8 +20,8 @@ class ChatAssistant {
         this.conversationHistory = []; // Track conversation for context
         
         // hCaptcha configuration (FREE - get your keys at https://www.hcaptcha.com/)
-        // Replace with your actual site key from hCaptcha dashboard
-        this.hcaptchaSiteKey = '10000000-ffff-ffff-ffff-000000000001'; // Test key - replace with your real key
+        // Your hCaptcha site key
+        this.hcaptchaSiteKey = '7fdcbe82-f100-408c-b068-f6446c1ec48a';
         this.hcaptchaToken = null;
         this.hcaptchaVerified = false;
         
@@ -108,7 +108,7 @@ class ChatAssistant {
                         </button>
                     </div>
                     <!-- Invisible hCaptcha (FREE spam protection) -->
-                    <div id="hcaptcha-container" class="h-captcha" data-sitekey="10000000-ffff-ffff-ffff-000000000001" data-size="invisible" data-callback="onHcaptchaSuccess"></div>
+                    <div id="hcaptcha-container" class="h-captcha" data-sitekey="7fdcbe82-f100-408c-b068-f6446c1ec48a" data-size="invisible" data-callback="onHcaptchaSuccess"></div>
                 </div>
             </div>
         `;

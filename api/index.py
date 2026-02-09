@@ -279,7 +279,7 @@ def verify_hcaptcha(token: str) -> bool:
     
     # Get hCaptcha secret key from environment variable
     # Get your FREE keys at: https://www.hcaptcha.com/
-    hcaptcha_secret = os.getenv('HCAPTCHA_4SECRET_KEY')
+    hcaptcha_secret = os.getenv('HCAPTCHA_SECRET_KEY')
     
     if not hcaptcha_secret:
         logger.warning("HCAPTCHA_SECRET_KEY not set. Skipping verification.")
