@@ -35,12 +35,18 @@ class IshikaAIAssistant:
         self.openai_api_key = openai_api_key
         self.openai_client = None
         self.conversation_history = []
+        self.init_error = None
         
         if OPENAI_AVAILABLE and openai_api_key:
             try:
-                self.openai_client = OpenAI(api_key=openai_api_key)
+                # Strip any whitespace from API key
+                clean_key = openai_api_key.strip()
+                self.openai_client = OpenAI(api_key=clean_key)
+                # Test the client with a simple call
+                logger.info("OpenAI client initialized successfully")
             except Exception as e:
                 logger.error(f"Failed to initialize OpenAI client: {e}")
+                self.init_error = str(e)
                 self.openai_client = None
         
         # Enhanced system prompt for smart, context-aware responses
@@ -261,6 +267,7 @@ def get_stats():
     global ai_assistant
     has_openai_key = bool(os.getenv('OPENAI_API_KEY'))
     has_client = ai_assistant and ai_assistant.openai_client is not None
+    init_error = ai_assistant.init_error if ai_assistant else None
     return jsonify({
         "status": "ready",
         "version": "3.0",
@@ -269,6 +276,7 @@ def get_stats():
         "openai_available": OPENAI_AVAILABLE,
         "api_key_set": has_openai_key,
         "client_initialized": has_client,
+        "init_error": init_error,
         "features": ["Smart AI Chat", "AI/ML Expert", "Portfolio Q&A", "Context-Aware Responses"]
     })
 
