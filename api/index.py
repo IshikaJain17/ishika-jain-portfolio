@@ -258,11 +258,17 @@ def home():
 
 @app.route('/api/stats')
 def get_stats():
+    global ai_assistant
+    has_openai_key = bool(os.getenv('OPENAI_API_KEY'))
+    has_client = ai_assistant and ai_assistant.openai_client is not None
     return jsonify({
         "status": "ready",
         "version": "3.0",
         "model": "gpt-4o-mini",
         "deployment": "vercel",
+        "openai_available": OPENAI_AVAILABLE,
+        "api_key_set": has_openai_key,
+        "client_initialized": has_client,
         "features": ["Smart AI Chat", "AI/ML Expert", "Portfolio Q&A", "Context-Aware Responses"]
     })
 
