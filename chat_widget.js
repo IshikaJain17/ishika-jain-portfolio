@@ -16,6 +16,7 @@ class ChatAssistant {
             this.apiUrl = apiUrl;
         }
         this.isOpen = false;
+        this.isMaximized = false;
         this.isProcessing = false;
         this.conversationHistory = []; // Track conversation for context
         this.setupChatWidget();
@@ -59,11 +60,21 @@ class ChatAssistant {
                         <h4>AI Assistant</h4>
                         <span class="status-text">Ask about Ishika</span>
                     </div>
-                    <button class="minimize-btn" id="minimizeChat">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 13H5v-2h14v2z"/>
-                        </svg>
-                    </button>
+                    <div class="header-buttons">
+                        <button class="maximize-btn" id="maximizeChat" title="Expand to panel">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="expand-icon">
+                                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                            </svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="collapse-icon" style="display:none;">
+                                <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+                            </svg>
+                        </button>
+                        <button class="minimize-btn" id="minimizeChat" title="Minimize">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 13H5v-2h14v2z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="chat-messages" id="chatMessages">
@@ -100,6 +111,9 @@ class ChatAssistant {
                     </div>
                 </div>
             </div>
+
+            <!-- Overlay for maximized state -->
+            <div class="chat-overlay" id="chatOverlay"></div>
         `;
 
         // Insert the chat widget into the page
@@ -304,19 +318,101 @@ class ChatAssistant {
                     font-size: 12px;
                 }
 
-                .minimize-btn {
+                .header-buttons {
+                    display: flex;
+                    gap: 8px;
+                    align-items: center;
+                }
+
+                .minimize-btn, .maximize-btn {
                     background: none;
                     border: none;
                     color: rgba(255, 255, 255, 0.7);
                     cursor: pointer;
-                    padding: 4px;
-                    border-radius: 4px;
+                    padding: 6px;
+                    border-radius: 6px;
                     transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
 
-                .minimize-btn:hover {
+                .minimize-btn:hover, .maximize-btn:hover {
                     background: rgba(255, 255, 255, 0.1);
                     color: #ffffff;
+                }
+
+                .maximize-btn:hover {
+                    color: #00d9ff;
+                }
+
+                /* Maximized Panel State */
+                .chat-widget-window.maximized {
+                    position: fixed;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    width: 450px;
+                    height: 100vh;
+                    border-radius: 0;
+                    border-left: 1px solid rgba(0, 217, 255, 0.3);
+                    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.4);
+                    z-index: 10001;
+                }
+
+                .chat-widget-window.maximized .chat-messages {
+                    height: calc(100vh - 160px);
+                }
+
+                .chat-widget-window.maximized .message-content p {
+                    font-size: 15px;
+                    line-height: 1.6;
+                }
+
+                .chat-widget-window.maximized .chat-header {
+                    padding: 24px;
+                }
+
+                .chat-widget-window.maximized .chat-input-area {
+                    padding: 20px;
+                }
+
+                /* Show/hide expand/collapse icons */
+                .chat-widget-window.maximized .expand-icon {
+                    display: none !important;
+                }
+
+                .chat-widget-window.maximized .collapse-icon {
+                    display: block !important;
+                }
+
+                /* Website overlay when maximized */
+                .chat-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 450px;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.3);
+                    z-index: 10000;
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: all 0.3s ease;
+                }
+
+                .chat-overlay.active {
+                    opacity: 1;
+                    visibility: visible;
+                }
+
+                @media (max-width: 768px) {
+                    .chat-widget-window.maximized {
+                        width: 100%;
+                        border-left: none;
+                    }
+                    .chat-overlay {
+                        display: none;
+                    }
                 }
 
                 /* Chat Messages */
@@ -614,6 +710,8 @@ class ChatAssistant {
         const chatButton = document.getElementById('chatWidgetButton');
         const chatWindow = document.getElementById('chatWidgetWindow');
         const minimizeBtn = document.getElementById('minimizeChat');
+        const maximizeBtn = document.getElementById('maximizeChat');
+        const overlay = document.getElementById('chatOverlay');
 
         if (chatButton) {
             chatButton.addEventListener('click', () => this.toggleChat());
@@ -621,6 +719,14 @@ class ChatAssistant {
 
         if (minimizeBtn) {
             minimizeBtn.addEventListener('click', () => this.closeChat());
+        }
+
+        if (maximizeBtn) {
+            maximizeBtn.addEventListener('click', () => this.toggleMaximize());
+        }
+
+        if (overlay) {
+            overlay.addEventListener('click', () => this.toggleMaximize());
         }
 
         // Send message
@@ -697,15 +803,36 @@ class ChatAssistant {
     closeChat() {
         const chatButton = document.getElementById('chatWidgetButton');
         const chatWindow = document.getElementById('chatWidgetWindow');
+        const overlay = document.getElementById('chatOverlay');
 
         if (chatButton && chatWindow) {
             this.isOpen = false;
+            this.isMaximized = false;
             chatButton.classList.remove('active');
             chatWindow.classList.remove('open');
+            chatWindow.classList.remove('maximized');
+            if (overlay) overlay.classList.remove('active');
             
             setTimeout(() => {
                 chatWindow.style.display = 'none';
             }, 300);
+        }
+    }
+
+    toggleMaximize() {
+        const chatWindow = document.getElementById('chatWidgetWindow');
+        const overlay = document.getElementById('chatOverlay');
+
+        if (chatWindow) {
+            this.isMaximized = !this.isMaximized;
+            chatWindow.classList.toggle('maximized');
+            if (overlay) overlay.classList.toggle('active');
+            
+            // Focus input after maximizing
+            if (this.isMaximized) {
+                const chatInput = document.getElementById('chatInput');
+                if (chatInput) chatInput.focus();
+            }
         }
     }
 
