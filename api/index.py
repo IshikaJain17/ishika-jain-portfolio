@@ -115,7 +115,7 @@ class IshikaAIAssistant:
 
 **Contact:**
 - Email: 17ishikajain@gmail.com
-- LinkedIn: Ishika Jain
+- LinkedIn: https://www.linkedin.com/in/ishika-jain-987635238/
 
 ## RESPONSE GUIDELINES:
 
@@ -206,7 +206,7 @@ class IshikaAIAssistant:
         
         # Contact
         if any(word in query_lower for word in ['contact', 'email', 'reach', 'hire', 'linkedin']):
-            return "📧 Email: 17ishikajain@gmail.com\n🔗 LinkedIn: Ishika Jain\n📍 Location: Noida, Delhi NCR\n✅ Open to full-time, freelance, and remote opportunities globally!"
+            return "📧 Email: 17ishikajain@gmail.com\n🔗 LinkedIn: https://www.linkedin.com/in/ishika-jain-987635238/\n📍 Location: Noida, Delhi NCR\n✅ Open to full-time, freelance, and remote opportunities globally!"
         
         # Education
         if any(word in query_lower for word in ['education', 'degree', 'study', 'college', 'gate', 'qualification']):
