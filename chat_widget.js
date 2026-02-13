@@ -858,32 +858,94 @@ class ChatAssistant {
         this.showTypingIndicator();
 
         try {
-            const response = await fetch(`${this.apiUrl}/query`, {
+            // Use streaming endpoint for real-time responses
+            const response = await fetch(`${this.apiUrl}/query/stream`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ 
                     question: question,
-                    history: this.conversationHistory.slice(-6) // Send last 6 messages for context
+                    history: this.conversationHistory.slice(-6)
                 })
             });
 
-            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Hide typing indicator and create bot message container for streaming
+            this.hideTypingIndicator();
+            const messageElement = this.addStreamingMessage();
             
-            if (response.ok) {
-                this.addMessage(data.answer, 'bot', data.sources);
-                // Add assistant response to conversation history
-                this.conversationHistory.push({ role: 'assistant', content: data.answer });
-            } else {
-                this.addMessage(`Sorry, I encountered an error: ${data.error}`, 'bot');
+            // Read the stream
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let fullResponse = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const text = decoder.decode(value, { stream: true });
+                const lines = text.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const data = JSON.parse(line.slice(6));
+                            if (data.chunk) {
+                                fullResponse += data.chunk;
+                                this.updateStreamingMessage(messageElement, fullResponse);
+                            }
+                            if (data.done) {
+                                // Add assistant response to conversation history
+                                this.conversationHistory.push({ role: 'assistant', content: fullResponse });
+                            }
+                            if (data.error) {
+                                this.updateStreamingMessage(messageElement, `Sorry, I encountered an error: ${data.error}`);
+                            }
+                        } catch (parseError) {
+                            // Ignore parsing errors for incomplete chunks
+                        }
+                    }
+                }
             }
         } catch (error) {
+            this.hideTypingIndicator();
             this.addMessage('Sorry, I had trouble connecting. Please make sure the backend server is running.', 'bot');
             console.error('Chat error:', error);
         } finally {
-            this.hideTypingIndicator();
             this.isProcessing = false;
+        }
+    }
+
+    addStreamingMessage() {
+        const chatMessages = document.getElementById('chatMessages');
+        if (!chatMessages) return null;
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message bot-message';
+        messageDiv.innerHTML = `
+            <div class="message-avatar"><img src="chatbot-logo.png" alt="Bot" class="bot-avatar-img"></div>
+            <div class="message-content">
+                <p class="streaming-content"></p>
+            </div>
+        `;
+
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        return messageDiv.querySelector('.streaming-content');
+    }
+
+    updateStreamingMessage(element, content) {
+        if (element) {
+            element.textContent = content;
+            const chatMessages = document.getElementById('chatMessages');
+            if (chatMessages) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
         }
     }
 

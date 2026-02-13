@@ -11,7 +11,7 @@ from typing import List, Dict
 import hashlib
 
 try:
-    from flask import Flask, request, jsonify
+    from flask import Flask, request, jsonify, Response
     from flask_cors import CORS
     FLASK_AVAILABLE = True
 except ImportError:
@@ -176,6 +176,45 @@ class IshikaAIAssistant:
             logger.error(f"OpenAI API error: {e}")
             return self._smart_fallback(query)
     
+    def generate_response_stream(self, query: str, conversation_history: list = None):
+        """Generate streaming response using GPT-4o mini"""
+        
+        if not OPENAI_AVAILABLE or not self.openai_client:
+            # Yield fallback as a single chunk
+            yield self._smart_fallback(query)
+            return
+        
+        try:
+            # Build messages with conversation history for context
+            messages = [{"role": "system", "content": self.system_prompt}]
+            
+            # Add conversation history if provided (last 6 messages for context)
+            if conversation_history:
+                for msg in conversation_history[-6:]:
+                    messages.append(msg)
+            
+            # Add current query
+            messages.append({"role": "user", "content": query})
+            
+            # Create streaming response
+            stream = self.openai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=messages,
+                max_tokens=400,
+                temperature=0.7,
+                presence_penalty=0.1,
+                frequency_penalty=0.1,
+                stream=True
+            )
+            
+            for chunk in stream:
+                if chunk.choices[0].delta.content:
+                    yield chunk.choices[0].delta.content
+                    
+        except Exception as e:
+            logger.error(f"OpenAI streaming API error: {e}")
+            yield self._smart_fallback(query)
+    
     def _smart_fallback(self, query: str) -> str:
         """Smart keyword-based fallback when API is unavailable"""
         query_lower = query.lower()
@@ -311,6 +350,61 @@ def query_assistant():
         
     except Exception as e:
         logger.error(f"Error in query endpoint: {e}")
+        return jsonify({
+            "error": "Sorry, I had trouble processing your question. Please try again.",
+            "debug": str(e) if app.debug else None
+        }), 500
+
+@app.route('/api/query/stream', methods=['POST'])
+def query_assistant_stream():
+    """Streaming endpoint for real-time LLM responses"""
+    try:
+        global ai_assistant
+        
+        if not ai_assistant:
+            initialize_assistant()
+        
+        # Get JSON data
+        try:
+            data = request.get_json(force=True)
+        except Exception as e:
+            logger.error(f"JSON parse error: {e}")
+            return jsonify({"error": "Invalid JSON data"}), 400
+            
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+            
+        question = data.get('question', '').strip()
+        conversation_history = data.get('history', [])
+        
+        if not question:
+            return jsonify({"error": "No question provided"}), 400
+        
+        def generate():
+            """Generator for Server-Sent Events"""
+            try:
+                for chunk in ai_assistant.generate_response_stream(question, conversation_history):
+                    # Send each chunk as an SSE event
+                    yield f"data: {json.dumps({'chunk': chunk})}\n\n"
+                # Send completion signal
+                yield f"data: {json.dumps({'done': True})}\n\n"
+            except Exception as e:
+                logger.error(f"Streaming error: {e}")
+                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+        
+        return Response(
+            generate(),
+            mimetype='text/event-stream',
+            headers={
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+                'Access-Control-Allow-Origin': '*',
+                'X-Accel-Buffering': 'no'
+            }
+        )
+        
+    except Exception as e:
+        logger.error(f"Error in streaming endpoint: {e}")
         return jsonify({
             "error": "Sorry, I had trouble processing your question. Please try again.",
             "debug": str(e) if app.debug else None
