@@ -857,6 +857,7 @@ class ChatAssistant {
         
         this.showTypingIndicator();
 
+        let reader = null;
         try {
             // Use streaming endpoint for real-time responses
             const response = await fetch(`${this.apiUrl}/query/stream`, {
@@ -879,11 +880,12 @@ class ChatAssistant {
             const messageElement = this.addStreamingMessage();
             
             // Read the stream
-            const reader = response.body.getReader();
+            reader = response.body.getReader();
             const decoder = new TextDecoder();
             let fullResponse = '';
+            let streamComplete = false;
 
-            while (true) {
+            while (!streamComplete) {
                 const { done, value } = await reader.read();
                 if (done) break;
 
@@ -901,9 +903,13 @@ class ChatAssistant {
                             if (data.done) {
                                 // Add assistant response to conversation history
                                 this.conversationHistory.push({ role: 'assistant', content: fullResponse });
+                                streamComplete = true;
+                                break;
                             }
                             if (data.error) {
                                 this.updateStreamingMessage(messageElement, `Sorry, I encountered an error: ${data.error}`);
+                                streamComplete = true;
+                                break;
                             }
                         } catch (parseError) {
                             // Ignore parsing errors for incomplete chunks
@@ -916,6 +922,14 @@ class ChatAssistant {
             this.addMessage('Sorry, I had trouble connecting. Please make sure the backend server is running.', 'bot');
             console.error('Chat error:', error);
         } finally {
+            // Always close the reader and reset processing state
+            if (reader) {
+                try {
+                    reader.releaseLock();
+                } catch (e) {
+                    // Ignore release errors
+                }
+            }
             this.isProcessing = false;
         }
     }
