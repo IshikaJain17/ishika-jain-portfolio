@@ -52,16 +52,34 @@ class IshikaAIAssistant:
         # Enhanced system prompt for smart, context-aware responses
         self.system_prompt = """You are "Ishika Jain AI Assistant", an intelligent and interactive AI portfolio assistant for Ishika Jain, an AI/ML Engineer and Generative AI Specialist.
 
+## CRITICAL FORMATTING RULES - MUST FOLLOW EXACTLY:
+NEVER use ** for bold formatting. NEVER use nested bullet points with dashes. 
+Use ONLY bullet points with •. One level of bullets only.
+Separate sections with blank lines.
+No superfluous formatting. Keep it simple and clean.
+
 ## YOUR DUAL ROLE:
 1. Portfolio Assistant: Answer questions about Ishika's experience, skills, projects, and achievements in FIRST PERSON ("I", "my", "me")
 2. AI/ML Expert: When users ask technical AI/ML questions, provide helpful explanations while naturally connecting to Ishika's expertise when relevant
 
-## RESPONSE FORMAT:
-- Use structured point-based lists with bullet points (•)
-- Keep answers concise and aligned
-- NO unnecessary markdown bold (**) or asterisks
-- Use clear line breaks between sections
-- Order information logically: main points first
+## RESPONSE FORMAT - STRICTLY ENFORCE:
+Use simple bullet points with • symbol
+Each bullet point = one fact or achievement
+Blank line between topic sections
+NO bold (**), NO dashes (-) for bullets, NO nested structures
+Keep language direct and concise
+One blank line between sections for readability
+
+## EXAMPLE CORRECT FORMAT:
+For "Tell me about your projects":
+
+Key Production AI Projects:
+
+• Conversational AI System with 96% generation accuracy
+• VLM pipeline improving extraction from 30% to 98%
+• YOLOv7 fine-tuning with 5500+ annotated images
+• Voice AI systems with advanced audio synthesis
+• Digital human avatars scaled to 1000+ concurrent sessions
 
 ## ISHIKA'S PROFILE (Single Source of Truth):
 
@@ -126,30 +144,34 @@ Contact:
 ## RESPONSE GUIDELINES:
 
 For Portfolio Questions:
-- Respond in FIRST PERSON as Ishika
-- Use point format with bullet points
-- Keep answers concise but impactful
-- Highlight measurable achievements
-- NO unnecessary bold or special formatting
+• Respond in FIRST PERSON as Ishika
+• Use bullet point format only
+• One fact per bullet point
+• NO bold formatting (**) ever
+• NO nested structures with dashes
+• Keep bullets concise and impactful
+• Highlight measurable achievements
 
 For AI/ML Technical Questions:
-- Provide clear, accurate explanations in structured format
-- Use bullet points for multiple concepts
-- Connect to Ishika's hands-on experience when relevant
-- Format as point lists for clarity
+• Provide clear, direct explanations
+• Use bullet points for concepts
+• NO bold or complex formatting
+• Connect to Ishika's hands-on experience when relevant
+• Format as simple bullet list
 
 Interactive Behavior:
-- Greetings: Respond warmly with point-based intro
-- Unclear questions: Ask ONE short clarifying question
-- Follow-up questions: Build context naturally
-- Technical deep-dives: Offer more detail in point format
+• Greetings: Respond warmly with intro in bullet points
+• Unclear questions: Ask ONE clarifying question
+• Follow-up questions: Build on context naturally
+• Use only • for all bullets
 
-IMPORTANT:
-- Never hallucinate information about Ishika not provided above
-- Always use point/list format for clarity
-- Remove all unnecessary bold (**) and special formatting
-- Be engaging and professional
-- Keep output aligned and organized"""
+ABSOLUTE RULES:
+- NEVER use ** for bold
+- NEVER use - or * for bullets (use • only)
+- NEVER nest bullets inside bullets
+- NEVER use complex markdown formatting
+- ALWAYS use simple, clean bullet points
+- ALWAYS separate sections with blank lines"""
     
     def generate_response(self, query: str, conversation_history: list = None) -> str:
         """Generate intelligent, context-aware response using GPT-4o mini"""
@@ -229,38 +251,38 @@ IMPORTANT:
         
         # Greetings
         if any(word in query_lower for word in ['hi', 'hello', 'hey', 'greetings']):
-            return "Hey! I'm Ishika Jain, an AI/ML Engineer passionate about building production-grade AI systems.\n\nFeel free to ask me about:\n• My experience and background\n• My projects and achievements\n• AI/ML expertise and technical skills\n• Career opportunities"
+            return "Hey! I'm Ishika Jain, an AI/ML Engineer.\n\nAsk me about:\n• My experience and background\n• Projects and achievements\n• AI/ML expertise\n• Career opportunities"
         
-        # Stand out / Why hire / Unique
-        if any(word in query_lower for word in ['stand out', 'unique', 'different', 'why hire', 'why you', 'special']):
-            return "What sets me apart:\n\n• Build production systems with real impact\n• Achieved 96-99% accuracy in production deployments\n• Reduced costs by 80-90% through AI automation\n• Bridge research and production effectively\n• Driven by solving real-world problems\n• Fast learner staying ahead of AI trends"
+        # Stand out
+        if any(word in query_lower for word in ['stand out', 'unique', 'different', 'why hire', 'why you']):
+            return "What sets me apart:\n\n• Build production systems with real impact\n• Achieved 96-99% accuracy in deployments\n• Reduced costs by 80-90%\n• Bridge research and production\n• Solve real-world problems\n• Fast learner and problem solver"
         
-        # Ambition / Vision / Goals
-        if any(word in query_lower for word in ['ambition', 'vision', 'goal', 'dream', 'future', 'passionate', 'drive', 'motivat']):
-            return "My vision and ambitions:\n\n• Use AI to solve problems impacting millions\n• Be at the forefront of AI innovation\n• Turn cutting-edge research into production systems\n• Transform industries through automation\n• Create ethical and accessible AI solutions\n• Thrive on solving hard, challenging problems"
+        # Ambition / Vision
+        if any(word in query_lower for word in ['ambition', 'vision', 'goal', 'dream', 'future']):
+            return "My vision:\n\n• Solve problems impacting millions\n• Be at forefront of AI innovation\n• Turn research into production systems\n• Transform industries through automation\n• Create ethical AI solutions\n• Tackle hard challenges"
         
         # Experience
-        if any(word in query_lower for word in ['experience', 'work', 'job', 'career', 'company', 'years']):
-            return "My professional background:\n\n• Current: AI/ML Engineer at Edysor Edutech Solutions (Aug 2025 - Present)\n• 1.5+ years hands-on experience in production AI systems\n• Data Scientist Intern (Generative AI) at Consint Solutions\n• AI/ML Trainee at Global Infoventures (NVIDIA Partner)\n• Location: Noida, Delhi NCR\n• Open to full-time, freelance, and remote opportunities"
+        if any(word in query_lower for word in ['experience', 'work', 'job', 'career', 'company']):
+            return "Professional background:\n\n• Current: AI/ML Engineer at Edysor Edutech (Aug 2025-Present)\n• 1.5+ years in production AI systems\n• Data Scientist Intern at Consint Solutions\n• AI/ML Trainee at Global Infoventures (NVIDIA)\n• Location: Noida, Delhi NCR\n• Open to full-time, freelance, remote opportunities"
         
-        # Skills / Expertise
+        # Skills
         if any(word in query_lower for word in ['skill', 'expertise', 'specialize', 'know', 'tech']):
-            return "My core expertise:\n\n• Conversational AI and Digital Avatars\n• Vision-Language Models and OCR pipelines\n• LLM Fine-tuning (LoRA, PEFT, QLoRA)\n• RAG and Multi-Agent Systems\n• Voice AI (STT, TTS, Voice Cloning)\n• Computer Vision (YOLO, OpenCV, Face Recognition)\n\nTech Stack: Python, PyTorch, TensorFlow, LangChain, LlamaIndex, Hugging Face, AWS, Docker"
+            return "Core expertise:\n\n• Conversational AI and Digital Avatars\n• Vision-Language Models and OCR\n• LLM Fine-tuning (LoRA, PEFT)\n• RAG and Multi-Agent Systems\n• Voice AI (STT, TTS, Voice Cloning)\n• Computer Vision (YOLO, OpenCV)\n\nTech Stack: Python, PyTorch, TensorFlow, LangChain, AWS, Docker"
         
         # Projects
         if any(word in query_lower for word in ['project', 'built', 'created', 'developed', 'production']):
-            return "Key projects and achievements:\n\n• Digital avatars with 96% generation accuracy\n• VLM pipeline improving extraction from 30% to 98%\n• Real-time AI systems at enterprise scale\n• Platforms handling 1000+ concurrent sessions\n• Cost reduction of 80-90% through automation\n• Scaled AI solutions with measurable business impact"
+            return "Key projects:\n\n• Digital avatars with 96% accuracy\n• VLM pipeline improving extraction from 30% to 98%\n• Real-time AI systems at enterprise scale\n• Platforms handling 1000+ concurrent sessions\n• 80-90% cost reduction through automation\n• Scaled solutions with business impact"
         
         # Contact
         if any(word in query_lower for word in ['contact', 'email', 'reach', 'hire', 'linkedin']):
-            return "Get in touch:\n\n• Email: 17ishikajain@gmail.com\n• LinkedIn: https://www.linkedin.com/in/ishika-jain-987635238/\n• Location: Noida, Delhi NCR\n• Availability: Full-time, freelance, remote (global)"
+            return "Get in touch:\n\n• Email: 17ishikajain@gmail.com\n• LinkedIn: https://www.linkedin.com/in/ishika-jain-987635238/\n• Location: Noida, Delhi NCR\n• Available: Full-time, freelance, remote (global)"
         
         # Education
-        if any(word in query_lower for word in ['education', 'degree', 'study', 'college', 'gate', 'qualification']):
-            return "Educational background:\n\n• B.Tech in Computer Science & Artificial Intelligence\n• GATE Qualified 2025 (CS & Data Science/AI)\n• Research paper published in Journal of Analytical Science and Technology (JAST)\n• Continuous learner with focus on latest AI/ML advances"
+        if any(word in query_lower for word in ['education', 'degree', 'study', 'college', 'gate']):
+            return "Education:\n\n• B.Tech in Computer Science & AI\n• GATE Qualified 2025 (CS & Data Science/AI)\n• Research paper in JAST journal\n• Continuous learner in AI/ML advances"
         
         # Default
-        return "I'm an AI/ML Engineer with 1.5+ years of experience building production AI systems.\n\nYou can ask me about:\n• My experience and projects\n• AI/ML technical expertise\n• Skills and achievements\n• Career opportunities and vision"
+        return "I'm an AI/ML Engineer with 1.5+ years building production systems.\n\nAsk me about:\n• Experience and projects\n• AI/ML expertise\n• Skills and achievements\n• Career opportunities"
 
 # Initialize Flask app
 if FLASK_AVAILABLE:
