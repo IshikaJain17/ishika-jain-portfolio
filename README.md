@@ -2,6 +2,7 @@
 
 ## 🎯 Overview
 This RAG (Retrieval-Augmented Generation) system integrates with your portfolio website to provide an AI-powered assistant that can answer questions about your experience, skills, and projects using your resume and documents as context.
+<img width="1887" height="925" alt="image" src="https://github.com/user-attachments/assets/6e85e0ae-418b-4c03-b9df-3b2e20022c35" />
 
 ## 🚀 Quick Start
 
